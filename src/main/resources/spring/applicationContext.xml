@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.alibaba.com/schema/stat"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context.xsd
+   http://www.springframework.org/schema/aop
+   http://www.springframework.org/schema/aop/spring-aop.xsd http://www.alibaba.com/schema/stat http://www.alibaba.com/schema/stat.xsd">
+
+    <!--加载配置文件-->
+    <context:property-placeholder location="classpath*:jdbc.properties"
+                                  ignore-unresolvable="true"/>
+
+
+
+    <!-- 连接池 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="driverClassName" value="${jdbc.driverClass}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <!--连接池的私有属性-->
+        <property name="maxActive" value="10"/>
+        <property name="maxWait" value="3000"/>
+    </bean>
+
+
+    <!--SqlSessionFactory配置
+    configLocation指定MyBatis核心配置文件-->
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 注入数据库连接池-->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 全局配置文件-->
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+
+
+    </bean>
+    <!-- 事务配置 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+    <!--START 只对业务逻辑层进行事务-->
+
+    <!--END 只对业务逻辑层进行事务-->
+</beans>
